@@ -7,20 +7,16 @@
       "RelativeMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\settingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|g:\\.rlmods\\tools\\simulation\\balldatavisualizer\\settingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|solutionrelative:settingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\settingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|solutionrelative:settingsform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|g:\\.rlmods\\tools\\simulation\\balldatavisualizer\\offsetcalculationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|solutionrelative:offsetcalculationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|solutionrelative:form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|g:\\.rlmods\\tools\\simulation\\balldatavisualizer\\settingsform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|solutionrelative:settingsform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|g:\\.rlmods\\tools\\simulation\\balldatavisualizer\\offsetcalculationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{15278D08-A55B-4381-9D41-672AAF9737AE}|BallDataVisualizer.csproj|solutionrelative:offsetcalculationform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,21 +26,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SettingsForm.Designer.cs",
-              "DocumentMoniker": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\SettingsForm.Designer.cs",
-              "RelativeDocumentMoniker": "SettingsForm.Designer.cs",
-              "ToolTip": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\SettingsForm.Designer.cs",
-              "RelativeToolTip": "SettingsForm.Designer.cs",
-              "ViewState": "AQIAABwAAAAAAAAAAAAqwCoAAAAjAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-06T11:50:25.94Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -53,21 +36,21 @@
               "RelativeDocumentMoniker": "SettingsForm.cs",
               "ToolTip": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\SettingsForm.cs",
               "RelativeToolTip": "SettingsForm.cs",
-              "ViewState": "AQIAAIsAAAAAAAAAAAAqwLUAAAAAAAAA",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAAABcAAAA6AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-05T21:36:32.609Z",
+              "WhenOpened": "2024-08-07T11:27:53.569Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "SettingsForm.cs [Design]",
-              "DocumentMoniker": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\SettingsForm.cs",
-              "RelativeDocumentMoniker": "SettingsForm.cs",
-              "ToolTip": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\SettingsForm.cs [Design]",
-              "RelativeToolTip": "SettingsForm.cs [Design]",
+              "Title": "OffsetCalculationForm.cs [Design]",
+              "DocumentMoniker": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\OffsetCalculationForm.cs",
+              "RelativeDocumentMoniker": "OffsetCalculationForm.cs",
+              "ToolTip": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\OffsetCalculationForm.cs [Design]",
+              "RelativeToolTip": "OffsetCalculationForm.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-05T21:36:15.987Z",
+              "WhenOpened": "2024-08-07T11:22:42.27Z",
               "EditorCaption": " [Design]"
             },
             {
@@ -78,22 +61,23 @@
               "RelativeDocumentMoniker": "Form1.cs",
               "ToolTip": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\Form1.cs",
               "RelativeToolTip": "Form1.cs",
-              "ViewState": "AQIAANUBAAAAAAAAAAAYwO8BAAAAAAAA",
+              "ViewState": "AQIAAAsCAAAAAAAAAAAuwCoCAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-05T19:08:26.885Z",
+              "WhenOpened": "2024-08-07T10:42:29.84Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\Form1.cs",
-              "RelativeDocumentMoniker": "Form1.cs",
-              "ToolTip": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\Form1.cs [Design]",
-              "RelativeToolTip": "Form1.cs [Design]",
+              "Title": "OffsetCalculationForm.cs",
+              "DocumentMoniker": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\OffsetCalculationForm.cs",
+              "RelativeDocumentMoniker": "OffsetCalculationForm.cs",
+              "ToolTip": "G:\\.RLMods\\Tools\\Simulation\\BallDataVisualizer\\OffsetCalculationForm.cs",
+              "RelativeToolTip": "OffsetCalculationForm.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAUAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-05T19:08:15.159Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2024-08-07T10:27:57.363Z",
+              "EditorCaption": ""
             }
           ]
         }

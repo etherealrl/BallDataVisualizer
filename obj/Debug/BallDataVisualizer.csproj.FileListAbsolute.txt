@@ -40,3 +40,4 @@ G:\.RLMods\Tools\Simulation\BallDataVisualizer\obj\Debug\BallDataVisualizer.cspr
 G:\.RLMods\Tools\Simulation\BallDataVisualizer\obj\Debug\BallData.358A028E.Up2Date
 G:\.RLMods\Tools\Simulation\BallDataVisualizer\obj\Debug\BallDataVisualizer.exe
 G:\.RLMods\Tools\Simulation\BallDataVisualizer\obj\Debug\BallDataVisualizer.pdb
+G:\.RLMods\Tools\Simulation\BallDataVisualizer\obj\Debug\BallDataVisualizer.OffsetCalculationForm.resources

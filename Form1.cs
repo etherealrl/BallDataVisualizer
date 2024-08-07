@@ -16,6 +16,7 @@ namespace BallDataVisualizer
         private int predictionChunkSize = 500; // Number of prediction lines generated per index
         private int currentChunkStart = 0; // Track the start index of the current visualization chunk
         private (int Start, int End) visualizationChunkRange = (0, 500); // Start and End of the indices to visualize
+        private (int Start, int End) lastValidVisualizationChunkRange = (0, 500); // Start and End of the indices to visualize
         private List<double[]> currentActualData = new List<double[]>(); // Current chunk of actual data
         private Dictionary<string, List<double[]>> currentPredictedDataSets = new Dictionary<string, List<double[]>>(); // Current chunk of predicted data for each file
         private Dictionary<string, Dictionary<int, List<double[]>>> allPredictedDataSets = new Dictionary<string, Dictionary<int, List<double[]>>>(); // All predicted data for analysis
@@ -23,26 +24,11 @@ namespace BallDataVisualizer
         private string actualDataFilePath = baseFolderYoyo + "weird_post_angle\\actual_data.csv";
         private List<string> predictedDataFilePaths = new List<string>(); // Store multiple prediction file paths
 
-        private Button nextIndexButton;
-        private Button previousIndexButton;
-        private Button settingsButton;
-        private TextBox currentIndexTextBox;
-        private CheckBox showBestLineCheckBox;
-        private LiveCharts.WinForms.CartesianChart chartX, chartY, chartZ;
-        private Label infoLabel;
-        private TabControl tabControl;
-
-        // New controls for visualization range
-        private TextBox visualizationChunkStartTextBox;
-        private TextBox visualizationChunkEndTextBox;
-        private Label visualizationRangeLabel;
-
         //////////////////////////////////////// [ INITIALIZATION ] ////////////////////////////////////////
 
         public Form1()
         {
             InitializeComponent();
-            InitializeUI();
             LoadAllPredictionsAsync(); // Load all predictions once for analysis
             LoadAndDisplayChunkAsync();
             tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
@@ -50,183 +36,6 @@ namespace BallDataVisualizer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-        }
-
-        private void InitializeUI()
-        {
-            // Initialize TabControl
-            tabControl = new TabControl
-            {
-                Dock = DockStyle.Fill
-            };
-
-            var positionTab = new TabPage("Position");
-            var velocityTab = new TabPage("Velocity");
-            var angularVelocityTab = new TabPage("Angular Velocity");
-
-            tabControl.TabPages.Add(positionTab);
-            tabControl.TabPages.Add(velocityTab);
-            tabControl.TabPages.Add(angularVelocityTab);
-
-            // Initialize charts
-            chartX = new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            };
-
-            chartY = new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            };
-
-            chartZ = new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            };
-
-            // Add charts to each tab
-            positionTab.Controls.Add(chartZ);
-            positionTab.Controls.Add(chartY);
-            positionTab.Controls.Add(chartX);
-
-            velocityTab.Controls.Add(new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            });
-            velocityTab.Controls.Add(new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            });
-            velocityTab.Controls.Add(new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            });
-
-            angularVelocityTab.Controls.Add(new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            });
-            angularVelocityTab.Controls.Add(new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            });
-            angularVelocityTab.Controls.Add(new LiveCharts.WinForms.CartesianChart
-            {
-                Dock = DockStyle.Top,
-                Height = 150
-            });
-
-            // Initialize buttons
-            nextIndexButton = new Button
-            {
-                Text = "Next Index",
-                Dock = DockStyle.Bottom,
-                Height = 30
-            };
-            nextIndexButton.Click += NextIndexButton_Click;
-
-            previousIndexButton = new Button
-            {
-                Text = "Previous Index",
-                Dock = DockStyle.Bottom,
-                Height = 30
-            };
-            previousIndexButton.Click += PreviousIndexButton_Click;
-
-            settingsButton = new Button
-            {
-                Text = "Settings",
-                Dock = DockStyle.Bottom,
-                Height = 30
-            };
-            settingsButton.Click += SettingsButton_Click;
-
-            // Initialize the index input box
-            currentIndexTextBox = new TextBox
-            {
-                Text = currentChunkStart.ToString(),
-                Dock = DockStyle.Left,
-                Width = 50
-            };
-            currentIndexTextBox.KeyDown += CurrentIndexTextBox_KeyDown;
-
-            // Initialize the show best line checkbox
-            showBestLineCheckBox = new CheckBox
-            {
-                Text = "Show Best Line",
-                Dock = DockStyle.Left,
-                Width = 120,
-                Checked = false // Default to showing the best line
-            };
-            showBestLineCheckBox.CheckedChanged += ShowBestLineCheckBox_CheckedChanged;
-
-            // Initialize the visualization range input boxes
-            visualizationRangeLabel = new Label
-            {
-                Text = "Visualization Range:",
-                Dock = DockStyle.Left,
-                Width = 130
-            };
-
-            visualizationChunkStartTextBox = new TextBox
-            {
-                Text = visualizationChunkRange.Start.ToString(),
-                Width = 50
-            };
-            visualizationChunkStartTextBox.TextChanged += VisualizationChunkStartTextBox_TextChanged;
-
-            visualizationChunkEndTextBox = new TextBox
-            {
-                Text = visualizationChunkRange.End.ToString(),
-                Width = 50
-            };
-            visualizationChunkEndTextBox.TextChanged += VisualizationChunkEndTextBox_TextChanged;
-
-            // Initialize info label
-            infoLabel = new Label
-            {
-                Text = "Info: ",
-                Dock = DockStyle.Top,
-                Height = 50,
-                AutoSize = false,
-                Padding = new Padding(10)
-            };
-
-            // Create a panel to hold visualization controls horizontally
-            var visualizationControlPanel = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Bottom,
-                Height = 35,
-                FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(10)
-            };
-
-            // Adjustments for bottom alignment of the labels
-            visualizationRangeLabel.TextAlign = ContentAlignment.BottomCenter; // Align text at the bottom
-
-            visualizationControlPanel.Controls.Add(showBestLineCheckBox);
-            visualizationControlPanel.Controls.Add(visualizationRangeLabel);
-            visualizationControlPanel.Controls.Add(visualizationChunkStartTextBox);
-            visualizationControlPanel.Controls.Add(new Label { Text = "to", TextAlign = ContentAlignment.BottomCenter });
-            visualizationControlPanel.Controls.Add(visualizationChunkEndTextBox);
-            visualizationControlPanel.Controls.Add(new Label { Text = "Index:", TextAlign = ContentAlignment.BottomCenter });
-            visualizationControlPanel.Controls.Add(currentIndexTextBox);
-
-            // Add controls to the form
-            Controls.Add(tabControl);
-            Controls.Add(infoLabel);
-            Controls.Add(visualizationControlPanel);
-            Controls.Add(nextIndexButton);
-            Controls.Add(previousIndexButton);
-            Controls.Add(settingsButton);
         }
 
         /////////////////////////////////////////// [ LOADING ] ////////////////////////////////////////////
@@ -301,6 +110,12 @@ namespace BallDataVisualizer
             // Calculate the start and size for the actual data
             int actualDataStartLine = currentChunkStart + visualizationChunkRange.Start;
             int chunkSize = visualizationChunkRange.End - visualizationChunkRange.Start;
+
+            if (!File.Exists(actualDataFilePath))
+            {
+                MessageBox.Show("The specified file does not exist. Please select a valid file in the settings", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             // Read actual data chunk
             using (var reader = new StreamReader(actualDataFilePath))
@@ -390,13 +205,6 @@ namespace BallDataVisualizer
 
         //////////////////////////////////////// [ CHARTS DRAWING ] ////////////////////////////////////////
 
-        private static readonly Dictionary<string, System.Windows.Media.Color> BaseColors = new Dictionary<string, System.Windows.Media.Color>
-        {
-            { "X", System.Windows.Media.Colors.Blue },
-            { "Y", System.Windows.Media.Colors.Green },
-            { "Z", System.Windows.Media.Colors.Red }
-        };
-
         private void InitializeCharts()
         {
             var currentPage = (VisualizationPage)tabControl.SelectedIndex;
@@ -417,13 +225,18 @@ namespace BallDataVisualizer
             chartY.Series.Clear();
             chartZ.Series.Clear();
 
+            // Add actual data series once
+            AddActualSeries(chartX, pageOffset, "X");
+            AddActualSeries(chartY, pageOffset + 1, "Y");
+            AddActualSeries(chartZ, pageOffset + 2, "Z");
+
             // Add series to charts for each predicted dataset
             int index = 0;
             foreach (var predictedDataSet in currentPredictedDataSets.Keys)
             {
-                AddChartSeries(chartX, pageOffset, currentPage, "X", BaseColors["X"], index, predictedDataSet);
-                AddChartSeries(chartY, pageOffset + 1, currentPage, "Y", BaseColors["Y"], index, predictedDataSet);
-                AddChartSeries(chartZ, pageOffset + 2, currentPage, "Z", BaseColors["Z"], index, predictedDataSet);
+                AddPredictedSeries(chartX, pageOffset, "X", BaseColors["X"], index, predictedDataSet);
+                AddPredictedSeries(chartY, pageOffset + 1, "Y", BaseColors["Y"], index, predictedDataSet);
+                AddPredictedSeries(chartZ, pageOffset + 2, "Z", BaseColors["Z"], index, predictedDataSet);
                 index++;
             }
 
@@ -433,6 +246,30 @@ namespace BallDataVisualizer
             UpdateAxis(chartX, startIndex, $"{currentPage} X");
             UpdateAxis(chartY, startIndex, $"{currentPage} Y");
             UpdateAxis(chartZ, startIndex, $"{currentPage} Z");
+
+            // Configure legends
+            ConfigureLegend(chartX);
+            ConfigureLegend(chartY);
+            ConfigureLegend(chartZ);
+        }
+
+        private void ConfigureLegend(LiveCharts.WinForms.CartesianChart chart)
+        {
+            chart.LegendLocation = LegendLocation.Bottom; // Place legend at the bottom
+        }
+
+        private void AddActualSeries(LiveCharts.WinForms.CartesianChart chart, int pageOffset, string axisLabel)
+        {
+            var actualSeries = new LineSeries
+            {
+                Title = $"Actual {axisLabel}",
+                Values = new ChartValues<double>(currentActualData.Select(d => d[pageOffset])),
+                PointGeometry = null,
+                Stroke = new System.Windows.Media.SolidColorBrush(BaseColors[axisLabel]),
+                Fill = System.Windows.Media.Brushes.Transparent
+            };
+
+            chart.Series.Add(actualSeries);
         }
 
         private void UpdateAxis(LiveCharts.WinForms.CartesianChart chart, int startIndex, string axisTitle)
@@ -447,42 +284,46 @@ namespace BallDataVisualizer
             chart.AxisY.Add(new Axis { Title = axisTitle });
         }
 
-        private void AddChartSeries(
-    LiveCharts.WinForms.CartesianChart chart,
-    int pageOffset,
-    VisualizationPage currentPage,
-    string axisLabel,
-    System.Windows.Media.Color baseColor,
-    int index,
-    string predictedDataSet)
+        private static readonly Dictionary<string, System.Windows.Media.Color> BaseColors = new Dictionary<string, System.Windows.Media.Color>
         {
-            var actualSeries = new LineSeries
-            {
-                Title = $"Actual {currentPage} {axisLabel}",
-                Values = new ChartValues<double>(currentActualData.Select(d => d[pageOffset])),
-                PointGeometry = null,
-                Stroke = new System.Windows.Media.SolidColorBrush(baseColor),
-                Fill = System.Windows.Media.Brushes.Transparent
-            };
+            { "X", System.Windows.Media.Colors.Blue },
+            { "Y", System.Windows.Media.Colors.Green },
+            { "Z", System.Windows.Media.Colors.Red }
+        };
 
+        // Define similar colors for predicted lines
+        private static readonly Dictionary<string, List<System.Windows.Media.Color>> PredictedColors = new Dictionary<string, List<System.Windows.Media.Color>>
+        {
+            { "X", new List<System.Windows.Media.Color> { System.Windows.Media.Colors.Purple, System.Windows.Media.Colors.DeepPink, System.Windows.Media.Colors.DarkTurquoise } },
+            { "Y", new List<System.Windows.Media.Color> { System.Windows.Media.Colors.Teal, System.Windows.Media.Colors.SandyBrown, System.Windows.Media.Colors.MediumSeaGreen } },
+            { "Z", new List<System.Windows.Media.Color> { System.Windows.Media.Colors.Orange, System.Windows.Media.Colors.OrangeRed, System.Windows.Media.Colors.Coral, System.Windows.Media.Colors.Salmon } }
+        };
+
+        private void AddPredictedSeries(
+            LiveCharts.WinForms.CartesianChart chart,
+            int pageOffset,
+            string axisLabel,
+            System.Windows.Media.Color baseColor,
+            int index,
+            string predictedDataSet)
+        {
             var predictedSeries = new LineSeries
             {
                 Title = $"{Path.GetFileName(predictedDataSet)} {axisLabel}",
                 Values = new ChartValues<double>(currentPredictedDataSets[predictedDataSet].Select(d => d[pageOffset])),
                 PointGeometry = null,
-                Stroke = new System.Windows.Media.SolidColorBrush(CreateColorVariation(baseColor, index)),
+                Stroke = new System.Windows.Media.SolidColorBrush(GetPredictedColor(axisLabel, index)),
                 Fill = System.Windows.Media.Brushes.Transparent,
                 StrokeDashArray = new System.Windows.Media.DoubleCollection { 2, 2 } // Dotted line
             };
 
-            chart.Series.Add(actualSeries);
             chart.Series.Add(predictedSeries);
 
             if (showBestLineCheckBox.Checked)
             {
                 var bestPredictionSeries = new LineSeries
                 {
-                    Title = $"Best {currentPage} {axisLabel}",
+                    Title = $"Best {axisLabel}",
                     Values = new ChartValues<double>(GetBestPrediction(pageOffset, predictedDataSet)),
                     PointGeometry = null,
                     Stroke = System.Windows.Media.Brushes.Gray,
@@ -494,11 +335,15 @@ namespace BallDataVisualizer
             }
         }
 
-        private System.Windows.Media.Color CreateColorVariation(System.Windows.Media.Color baseColor, int index)
+        private System.Windows.Media.Color GetPredictedColor(string axisLabel, int index)
         {
-            // Create a variation of the base color by adjusting its opacity or brightness
-            byte variationAmount = (byte)(50 + (index * 20) % 150);
-            return System.Windows.Media.Color.FromArgb(variationAmount, baseColor.R, baseColor.G, baseColor.B);
+            // Cycle through the defined predicted colors for each axis
+            if (PredictedColors.ContainsKey(axisLabel))
+            {
+                var colors = PredictedColors[axisLabel];
+                return colors[index % colors.Count];
+            }
+            return System.Windows.Media.Colors.Gray; // Default if no color is found
         }
 
         private IEnumerable<double> GetBestPrediction(int componentIndex, string predictedDataSet)
@@ -544,7 +389,6 @@ namespace BallDataVisualizer
 
             return bestPrediction;
         }
-
 
         private void UpdateInfoLabel()
         {
@@ -635,7 +479,7 @@ namespace BallDataVisualizer
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
-            using (var settingsForm = new SettingsForm(predictionChunkSize, visualizationChunkRange, actualDataFilePath, predictedDataFilePaths))
+            using (var settingsForm = new SettingsForm(predictionChunkSize, actualDataFilePath, predictedDataFilePaths))
             {
                 if (settingsForm.ShowDialog() == DialogResult.OK)
                 {
@@ -651,6 +495,12 @@ namespace BallDataVisualizer
             }
         }
 
+        private void OpenOffsetCalculationFormButton_Click(object sender, EventArgs e)
+        {
+            var offsetForm = new OffsetCalculationForm();
+            offsetForm.Show();
+        }
+
         private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             InitializeCharts();
@@ -664,12 +514,18 @@ namespace BallDataVisualizer
                 if (start >= 0 && start < predictionChunkSize)
                 {
                     visualizationChunkRange = (start, visualizationChunkRange.End);
+                    lastValidVisualizationChunkRange.Start = start; // Update last valid start
                     LoadAndDisplayChunkAsync();
                 }
                 else
                 {
                     MessageBox.Show("Start value must be between 0 and the prediction chunk size.");
+                    visualizationChunkStartTextBox.Text = lastValidVisualizationChunkRange.Start.ToString(); // Reset to last valid start
                 }
+            }
+            else
+            {
+                visualizationChunkStartTextBox.Text = lastValidVisualizationChunkRange.Start.ToString(); // Reset if parsing fails
             }
         }
 
@@ -680,12 +536,18 @@ namespace BallDataVisualizer
                 if (end > visualizationChunkRange.Start && end <= predictionChunkSize)
                 {
                     visualizationChunkRange = (visualizationChunkRange.Start, end);
+                    lastValidVisualizationChunkRange.End = end; // Update last valid end
                     LoadAndDisplayChunkAsync();
                 }
                 else
                 {
                     MessageBox.Show("End value must be greater than start and less than or equal to the prediction chunk size.");
+                    visualizationChunkEndTextBox.Text = lastValidVisualizationChunkRange.End.ToString(); // Reset to last valid end
                 }
+            }
+            else
+            {
+                visualizationChunkEndTextBox.Text = lastValidVisualizationChunkRange.End.ToString(); // Reset if parsing fails
             }
         }
     }

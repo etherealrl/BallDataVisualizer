@@ -1,11 +1,12 @@
 ﻿namespace BallDataVisualizer
 {
-    partial class SettingsForm
+    partial class OffsetCalculationForm
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+        
 
         /// <summary>
         /// Clean up any resources being used.
@@ -28,21 +29,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // SettingsForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(819, 235);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "SettingsForm";
-            this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Settings";
-            this.ResumeLayout(false);
-
         }
 
         #endregion

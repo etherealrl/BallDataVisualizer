@@ -8,8 +8,6 @@ namespace BallDataVisualizer
     public partial class SettingsForm : Form
     {
         private TextBox predictionChunkSizeTextBox;
-        private TextBox visualizationChunkStartTextBox;
-        private TextBox visualizationChunkEndTextBox;
         private TextBox actualDataPathTextBox;
         private ListBox predictedDataPathsListBox;
         private Button browseActualFileButton;
@@ -23,7 +21,7 @@ namespace BallDataVisualizer
         public string ActualDataFilePath { get; private set; }
         public List<string> PredictedDataFilePaths { get; private set; } = new List<string>();
 
-        public SettingsForm(int currentPredictionChunkSize, (int Start, int End) currentVisualizationChunkRange, string currentActualPath, List<string> currentPredictedPaths)
+        public SettingsForm(int currentPredictionChunkSize, string currentActualPath, List<string> currentPredictedPaths)
         {
             // Initialize UI components
             InitializeComponent();
@@ -31,8 +29,6 @@ namespace BallDataVisualizer
 
             // Set initial values for text boxes
             predictionChunkSizeTextBox.Text = currentPredictionChunkSize.ToString();
-            visualizationChunkStartTextBox.Text = currentVisualizationChunkRange.Start.ToString();
-            visualizationChunkEndTextBox.Text = currentVisualizationChunkRange.End.ToString();
             actualDataPathTextBox.Text = currentActualPath;
             PredictedDataFilePaths = currentPredictedPaths;
             UpdatePredictedDataPathsListBox();
@@ -42,8 +38,6 @@ namespace BallDataVisualizer
         {
             // Initialize components
             predictionChunkSizeTextBox = new TextBox { Dock = DockStyle.Fill };
-            visualizationChunkStartTextBox = new TextBox { Dock = DockStyle.Fill };
-            visualizationChunkEndTextBox = new TextBox { Dock = DockStyle.Fill };
             actualDataPathTextBox = new TextBox { Dock = DockStyle.Fill, ReadOnly = true };
             predictedDataPathsListBox = new ListBox { Dock = DockStyle.Fill, Height = 100 };
             browseActualFileButton = new Button { Text = "Browse...", Dock = DockStyle.Fill };
@@ -54,7 +48,6 @@ namespace BallDataVisualizer
 
             // Labels
             var predictionChunkSizeLabel = new Label { Text = "Prediction Chunk Size:", Dock = DockStyle.Fill };
-            var visualizationChunkRangeLabel = new Label { Text = "Visualization Chunk Range:", Dock = DockStyle.Fill };
             var actualPathLabel = new Label { Text = "Actual Data Path:", Dock = DockStyle.Fill };
             var predictedPathLabel = new Label { Text = "Predicted Data Paths:", Dock = DockStyle.Fill };
 
@@ -82,12 +75,6 @@ namespace BallDataVisualizer
             layout.Controls.Add(predictionChunkSizeLabel, 0, 0);
             layout.Controls.Add(predictionChunkSizeTextBox, 1, 0);
             layout.Controls.Add(new Label { Text = "", Dock = DockStyle.Fill }, 2, 0); // Spacer
-
-            layout.Controls.Add(visualizationChunkRangeLabel, 0, 1);
-            layout.Controls.Add(new Label { Text = "Start:", Dock = DockStyle.Fill }, 0, 2);
-            layout.Controls.Add(visualizationChunkStartTextBox, 1, 2);
-            layout.Controls.Add(new Label { Text = "End:", Dock = DockStyle.Fill }, 0, 3);
-            layout.Controls.Add(visualizationChunkEndTextBox, 1, 3);
 
             layout.Controls.Add(actualPathLabel, 0, 4);
             layout.Controls.Add(actualDataPathTextBox, 1, 4);
@@ -155,13 +142,9 @@ namespace BallDataVisualizer
 
         private void OkButton_Click(object sender, EventArgs e)
         {
-            if (int.TryParse(predictionChunkSizeTextBox.Text, out int newPredictionChunkSize) && newPredictionChunkSize > 0 &&
-                int.TryParse(visualizationChunkStartTextBox.Text, out int visualizationStart) &&
-                int.TryParse(visualizationChunkEndTextBox.Text, out int visualizationEnd) &&
-                visualizationStart >= 0 && visualizationEnd >= visualizationStart && visualizationEnd <= newPredictionChunkSize)
+            if (int.TryParse(predictionChunkSizeTextBox.Text, out int newPredictionChunkSize) && newPredictionChunkSize > 0)
             {
                 PredictionChunkSize = newPredictionChunkSize;
-                VisualizationChunkRange = (visualizationStart, visualizationEnd);
                 ActualDataFilePath = actualDataPathTextBox.Text;
                 DialogResult = DialogResult.OK;
                 Close();
