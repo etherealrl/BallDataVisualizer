@@ -94,6 +94,7 @@ namespace BallDataVisualizer
                 await Task.Run(() => LoadDataChunk());
                 InitializeCharts();
                 UpdateInfoLabel();
+                UpdateAccuracyLabels();
             }
             catch (Exception ex)
             {
@@ -234,9 +235,9 @@ namespace BallDataVisualizer
             int index = 0;
             foreach (var predictedDataSet in currentPredictedDataSets.Keys)
             {
-                AddPredictedSeries(chartX, pageOffset, "X", BaseColors["X"], index, predictedDataSet);
-                AddPredictedSeries(chartY, pageOffset + 1, "Y", BaseColors["Y"], index, predictedDataSet);
-                AddPredictedSeries(chartZ, pageOffset + 2, "Z", BaseColors["Z"], index, predictedDataSet);
+                AddPredictedSeries(chartX, pageOffset, "X", index, predictedDataSet);
+                AddPredictedSeries(chartY, pageOffset + 1, "Y", index, predictedDataSet);
+                AddPredictedSeries(chartZ, pageOffset + 2, "Z", index, predictedDataSet);
                 index++;
             }
 
@@ -291,19 +292,25 @@ namespace BallDataVisualizer
             { "Z", System.Windows.Media.Colors.Red }
         };
 
-        // Define similar colors for predicted lines
-        private static readonly Dictionary<string, List<System.Windows.Media.Color>> PredictedColors = new Dictionary<string, List<System.Windows.Media.Color>>
+        // Define a consistent set of colors for predicted lines
+        private static readonly List<System.Windows.Media.Color> ConsistentColors = new List<System.Windows.Media.Color>
         {
-            { "X", new List<System.Windows.Media.Color> { System.Windows.Media.Colors.Purple, System.Windows.Media.Colors.DeepPink, System.Windows.Media.Colors.DarkTurquoise } },
-            { "Y", new List<System.Windows.Media.Color> { System.Windows.Media.Colors.Teal, System.Windows.Media.Colors.SandyBrown, System.Windows.Media.Colors.MediumSeaGreen } },
-            { "Z", new List<System.Windows.Media.Color> { System.Windows.Media.Colors.Orange, System.Windows.Media.Colors.OrangeRed, System.Windows.Media.Colors.Coral, System.Windows.Media.Colors.Salmon } }
+            System.Windows.Media.Colors.Purple,
+            System.Windows.Media.Colors.DeepPink,
+            System.Windows.Media.Colors.DarkTurquoise,
+            System.Windows.Media.Colors.Teal,
+            System.Windows.Media.Colors.SandyBrown,
+            System.Windows.Media.Colors.MediumSeaGreen,
+            System.Windows.Media.Colors.Orange,
+            System.Windows.Media.Colors.OrangeRed,
+            System.Windows.Media.Colors.Coral,
+            System.Windows.Media.Colors.Salmon
         };
 
         private void AddPredictedSeries(
             LiveCharts.WinForms.CartesianChart chart,
             int pageOffset,
             string axisLabel,
-            System.Windows.Media.Color baseColor,
             int index,
             string predictedDataSet)
         {
@@ -312,7 +319,7 @@ namespace BallDataVisualizer
                 Title = $"{Path.GetFileName(predictedDataSet)} {axisLabel}",
                 Values = new ChartValues<double>(currentPredictedDataSets[predictedDataSet].Select(d => d[pageOffset])),
                 PointGeometry = null,
-                Stroke = new System.Windows.Media.SolidColorBrush(GetPredictedColor(axisLabel, index)),
+                Stroke = new System.Windows.Media.SolidColorBrush(GetConsistentColor(index)),
                 Fill = System.Windows.Media.Brushes.Transparent,
                 StrokeDashArray = new System.Windows.Media.DoubleCollection { 2, 2 } // Dotted line
             };
@@ -335,15 +342,10 @@ namespace BallDataVisualizer
             }
         }
 
-        private System.Windows.Media.Color GetPredictedColor(string axisLabel, int index)
+        private System.Windows.Media.Color GetConsistentColor(int index)
         {
-            // Cycle through the defined predicted colors for each axis
-            if (PredictedColors.ContainsKey(axisLabel))
-            {
-                var colors = PredictedColors[axisLabel];
-                return colors[index % colors.Count];
-            }
-            return System.Windows.Media.Colors.Gray; // Default if no color is found
+            // Cycle through the defined consistent colors for predictions
+            return ConsistentColors[index % ConsistentColors.Count];
         }
 
         private IEnumerable<double> GetBestPrediction(int componentIndex, string predictedDataSet)
@@ -417,7 +419,9 @@ namespace BallDataVisualizer
                             $"Z: MAE: {maeZ:F2}, RMSE: {rmseZ:F2}, Max Error: {maxErrorZ:F2}\n";
             }
 
-            infoLabel.Text = infoText;
+            errorMetricsLabel.Text = infoText;
+            errorMetricsLabel.AutoSize = true; // Ensures the label resizes to fit the content
+            errorMetricsLabel.BringToFront(); // Bring the error metrics label to the front to avoid overlap
         }
 
         ////////////////////////////////////// [ ERROR CALCULATIONS ] //////////////////////////////////////
@@ -438,6 +442,47 @@ namespace BallDataVisualizer
         {
             return currentActualData.Zip(currentPredictedDataSets[predictedDataSet], (actual, predicted) => Math.Abs(actual[componentIndex] - predicted[componentIndex]))
                                     .Max();
+        }
+
+        //////////////////////////////////////// [ ACCURACY LABELS ] ////////////////////////////////////////
+
+        private void UpdateAccuracyLabels()
+        {
+            var currentPage = (VisualizationPage)tabControl.SelectedIndex;
+            int pageOffset = 1 + (int)currentPage * 3;
+
+            // Get the correct charts for the current page
+            var currentTab = tabControl.TabPages[(int)currentPage];
+            var charts = currentTab.Controls.OfType<LiveCharts.WinForms.CartesianChart>().ToList();
+
+            if (charts.Count < 3) return; // Ensure we have three charts
+
+            var chartX = charts[2];
+            var chartY = charts[1];
+            var chartZ = charts[0];
+
+            // Update accuracy labels for each chart
+            accuracyLabelX.Text = $"Most Accurate X: {GetMostAccurateDataset(pageOffset)}";
+            accuracyLabelY.Text = $"Most Accurate Y: {GetMostAccurateDataset(pageOffset + 1)}";
+            accuracyLabelZ.Text = $"Most Accurate Z: {GetMostAccurateDataset(pageOffset + 2)}";
+        }
+
+        private string GetMostAccurateDataset(int componentIndex)
+        {
+            double minMae = double.MaxValue;
+            string mostAccurateDataset = "";
+
+            foreach (var predictedDataSet in currentPredictedDataSets.Keys)
+            {
+                double mae = CalculateMeanAbsoluteError(componentIndex, predictedDataSet);
+                if (mae < minMae)
+                {
+                    minMae = mae;
+                    mostAccurateDataset = Path.GetFileName(predictedDataSet);
+                }
+            }
+
+            return mostAccurateDataset;
         }
 
         //////////////////////////////////////// [ EVENT HANDLERS ] ////////////////////////////////////////
@@ -475,6 +520,7 @@ namespace BallDataVisualizer
         private void ShowBestLineCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             InitializeCharts();
+            UpdateAccuracyLabels();
         }
 
         private void SettingsButton_Click(object sender, EventArgs e)
@@ -505,6 +551,7 @@ namespace BallDataVisualizer
         {
             InitializeCharts();
             UpdateInfoLabel();
+            UpdateAccuracyLabels();
         }
 
         private void VisualizationChunkStartTextBox_TextChanged(object sender, EventArgs e)

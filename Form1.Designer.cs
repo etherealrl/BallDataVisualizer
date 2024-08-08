@@ -24,6 +24,11 @@ namespace BallDataVisualizer
         private Label visualizationRangeLabel;
         private Button openOffsetCalculationFormButton;
 
+        private Label errorMetricsLabel;
+        private Label accuracyLabelX;
+        private Label accuracyLabelY;
+        private Label accuracyLabelZ;
+
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -66,7 +71,33 @@ namespace BallDataVisualizer
             var velocityTab = new TabPage("Velocity");
             var angularVelocityTab = new TabPage("Angular Velocity");
 
+            // Initialize accuracy labels
+            accuracyLabelX = new Label
+            {
+                Text = "Most Accurate X: ",
+                Dock = DockStyle.Bottom,
+                Height = 20,
+                AutoSize = true
+            };
+
+            accuracyLabelY = new Label
+            {
+                Text = "Most Accurate Y: ",
+                Dock = DockStyle.Bottom,
+                Height = 20,
+                AutoSize = true
+            };
+
+            accuracyLabelZ = new Label
+            {
+                Text = "Most Accurate Z: ",
+                Dock = DockStyle.Bottom,
+                Height = 20,
+                AutoSize = true
+            };
+
             tabControl.TabPages.Add(positionTab);
+            
             tabControl.TabPages.Add(velocityTab);
             tabControl.TabPages.Add(angularVelocityTab);
 
@@ -94,6 +125,10 @@ namespace BallDataVisualizer
             positionTab.Controls.Add(chartY);
             positionTab.Controls.Add(chartX);
 
+            positionTab.Controls.Add(accuracyLabelX);
+            positionTab.Controls.Add(accuracyLabelY);
+            positionTab.Controls.Add(accuracyLabelZ);
+
             velocityTab.Controls.Add(new LiveCharts.WinForms.CartesianChart
             {
                 Dock = DockStyle.Top,
@@ -125,6 +160,17 @@ namespace BallDataVisualizer
                 Dock = DockStyle.Top,
                 Height = 150
             });
+
+
+            // Initialize error metrics label
+            errorMetricsLabel = new Label
+            {
+                Text = "Error Metrics: ",
+                Dock = DockStyle.Top,
+                Height = 60,
+                AutoSize = true,
+                Padding = new Padding(10)
+            };
 
             // Initialize buttons
             nextIndexButton = new Button
